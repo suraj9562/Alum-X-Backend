@@ -26,4 +26,12 @@ Thanks to all the amazing people who have contributed to **AlumX's Backend Repos
 - Hasan Ravda (@hasanravda)
 - Kamakshi Gupta (@29kamakshigupta)
 - Murari Kandagtla(@murariii123)
-
+- Manisha katariya (@chanchukatariya5-gif)
+- Khushi Shorey(@khushishorey)
+- Suraj Wadikar(@suraj9562)
+- Sayed Al Amaan Zaidi(@amaan1114)
+- jatin (@thenix09)
+- Aaditya Maurya (@aadityamaurya31)
+- Paarth Arora (@iit2025280-sys)
+- Kushagra Sahu (@KushagraSahu-01)
+- Ishan Raj Singh (@ishanrajsingh)

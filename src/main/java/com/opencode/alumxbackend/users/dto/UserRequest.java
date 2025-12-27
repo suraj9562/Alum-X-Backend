@@ -3,10 +3,12 @@ package com.opencode.alumxbackend.users.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import jakarta.validation.constraints.Size;
 
 @Data
 public class UserRequest {
     @NotBlank(message = "Username is required")
+    @Size(max = 12, message = "Username must be 12 characters or less")
     private String username;
 
     @NotBlank(message = "Full name is required")

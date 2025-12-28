@@ -43,28 +43,24 @@ public class JobPostServiceImpl implements JobPostService{
 
     @Override
     public void likePost(String postId, Long userId) {
-        // 1. Check if post exists
-        if (!jobPostRepository.existsById(postId)) {
-            throw new ResourceNotFoundException("Post not found with postId: " + postId);
-        }
+        // 1. Check if post exists and retrieve it
+        JobPost post = jobPostRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with postId: " + postId));
+        // 2. Check if user exists and retrieve it
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         
-        // 2. Check if user exists
-        if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("User not found with id: " + userId);
-        }
-        
-        // 3. Check if user already liked the post
-        if (jobPostLikeRepository.existsByPostIdAndUserId(postId, userId)) {
+        // 3. Create and save the like - let database handle uniqueness atomically
+        try {
+            JobPostLike like = JobPostLike.builder()
+                    .jobPost(post)
+                    .user(user)
+                    .build();
+            jobPostLikeRepository.save(like);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // Unique constraint violation - user already liked this post
             throw new BadRequestException("User has already liked this post");
         }
-        
-        // 4. Create and save the like
-        JobPostLike like = JobPostLike.builder()
-                .postId(postId)
-                .userId(userId)
-                .build();
-        
-        jobPostLikeRepository.save(like);
     }
 
     @Override

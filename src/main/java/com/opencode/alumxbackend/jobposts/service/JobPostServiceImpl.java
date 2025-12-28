@@ -3,6 +3,7 @@ package com.opencode.alumxbackend.jobposts.service;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -11,8 +12,10 @@ import com.opencode.alumxbackend.common.exception.BadRequestException;
 import com.opencode.alumxbackend.common.exception.ForbiddenException;
 import com.opencode.alumxbackend.common.exception.ResourceNotFoundException;
 import com.opencode.alumxbackend.jobposts.dto.JobPostRequest;
+import com.opencode.alumxbackend.jobposts.dto.JobPostResponse;
 import com.opencode.alumxbackend.jobposts.model.JobPost;
 import com.opencode.alumxbackend.jobposts.repository.JobPostRepository;
+import com.opencode.alumxbackend.users.model.User;
 import com.opencode.alumxbackend.users.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +29,14 @@ public class JobPostServiceImpl implements JobPostService{
     private final JobPostRepository jobPostRepository;
     private final UserRepository userRepository;
 
+    @Override
+    public List<JobPostResponse> getPostsByUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
+        List<JobPost> posts = jobPostRepository.findByUsernameOrderByCreatedAtDesc(user.getUsername());
+        return JobPostResponse.fromEntities(posts);
+    }
 
     @Override
     public JobPost createJobPost(JobPostRequest request) {

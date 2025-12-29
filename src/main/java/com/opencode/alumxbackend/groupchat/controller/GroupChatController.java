@@ -3,13 +3,11 @@ package com.opencode.alumxbackend.groupchat.controller;
 import com.opencode.alumxbackend.groupchat.dto.GroupChatRequest;
 import com.opencode.alumxbackend.groupchat.dto.GroupChatResponse;
 import com.opencode.alumxbackend.groupchat.model.GroupChat;
-import com.opencode.alumxbackend.groupchat.model.Participant;
 import com.opencode.alumxbackend.groupchat.service.GroupChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/group-chats")

@@ -241,8 +241,8 @@ class GroupMessageControllerIntegrationTest {
     @Test
     @DisplayName("GET /api/groups/{groupId}/messages - should fail for non-existent group")
     void getMessages_FromNonExistentGroup_ReturnsNotFound() {
-        // Note: Service throws RuntimeException which returns 500
-        // This test validates current behavior
+        // Note: Service throws GroupNotFoundException which is RuntimeException
+        // but we are catching it and returning 404
         try {
             webClient.get()
                     .uri("/api/groups/99999/messages?userId=" + testUser1.getId())
@@ -250,7 +250,7 @@ class GroupMessageControllerIntegrationTest {
                     .bodyToMono(String.class)
                     .block();
         } catch (Exception e) {
-            assertThat(e.getMessage()).contains("500");
+            assertThat(e.getMessage()).contains("404");
         }
     }
 }

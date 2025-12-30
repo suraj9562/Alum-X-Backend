@@ -58,4 +58,21 @@ public class JobPostController {
         jobPostService.likePost(postId, userId);
         return ResponseEntity.ok(Map.of("message", "Post liked successfully"));
     }
+
+    @DeleteMapping("/jobs/{jobId}")
+    public ResponseEntity<?> deleteJobPost(
+            @RequestHeader(value = "X-DUMMY-TOKEN", required = false) String token,
+            @PathVariable String jobId,
+            @RequestParam Long userId
+    ) {
+        // TODO: Replace @RequestParam userId with @AuthenticationPrincipal once JWT auth is implemented
+        // Currently using request-based userId due to incomplete auth setup.
+        // In production, userId should be extracted from SecurityContext/JWT token.
+        if (token == null || !token.equals(DUMMY_TOKEN)) {
+            throw new UnauthorizedAccessException("Unauthorized: Invalid or missing X-DUMMY-TOKEN header");
+        }
+
+        jobPostService.deletePostByUser(userId, jobId);
+        return ResponseEntity.ok(Map.of("message", "Job post deleted successfully"));
+    }
 }

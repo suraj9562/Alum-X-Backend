@@ -6,6 +6,11 @@ import com.opencode.alumxbackend.groupchatmessages.dto.SendGroupMessageRequest;
 import com.opencode.alumxbackend.groupchatmessages.exception.GroupNotFoundException;
 import com.opencode.alumxbackend.groupchatmessages.service.GroupMessageService;
 import jakarta.validation.Valid;
+
+
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -42,6 +47,16 @@ public class GroupMessageController {
     ) {
         return service.fetchMessages(groupId, userId);
     }
+    @DeleteMapping("/{groupId}/messages/{messageId}")
+public ResponseEntity<Void> deleteMessage(
+        @PathVariable Long groupId,
+        @PathVariable Long messageId,
+        @RequestParam Long userId
+) {
+    service.deleteMessage(groupId, messageId, userId);
+    return ResponseEntity.noContent().build();
+}
+
     // Add this new endpoint: OPEN API (no auth)
     @GetMapping("/{groupId}/messages")
     public ResponseEntity<List<GroupMessageResponse>> getAllGroupMessages(

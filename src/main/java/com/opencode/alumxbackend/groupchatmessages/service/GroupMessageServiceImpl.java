@@ -1,7 +1,13 @@
 package com.opencode.alumxbackend.groupchatmessages.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.opencode.alumxbackend.groupchat.model.GroupChat;
 import com.opencode.alumxbackend.groupchat.model.Participant;
+import com.opencode.alumxbackend.groupchat.repository.GroupChatRepository;
 import com.opencode.alumxbackend.groupchatmessages.dto.GroupMessageResponse;
 import com.opencode.alumxbackend.groupchatmessages.dto.SendGroupMessageRequest;
 import com.opencode.alumxbackend.groupchatmessages.exception.GroupNotFoundException;
@@ -9,12 +15,8 @@ import com.opencode.alumxbackend.groupchatmessages.exception.InvalidMessageExcep
 import com.opencode.alumxbackend.groupchatmessages.exception.UserNotMemberException;
 import com.opencode.alumxbackend.groupchatmessages.model.GroupMessage;
 import com.opencode.alumxbackend.groupchatmessages.repository.GroupMessageRepository;
-import com.opencode.alumxbackend.groupchat.repository.GroupChatRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -103,4 +105,33 @@ public class GroupMessageServiceImpl implements GroupMessageService {
                 .map(this::mapToResponse)
                 .toList();
     }
+     
+@Override
+    public void deleteMessage(Long groupId, Long messageId, Long userId) {
+        GroupChat group = groupChatRepository.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("Group not found"));
+
+        boolean isMember = group.getParticipants()
+                .stream()
+                .anyMatch(p -> p.getUserId().equals(userId));
+
+        if (!isMember) {
+            throw new UserNotMemberException(userId);
+        }
+
+        GroupMessage message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new InvalidMessageException("Message not found"));
+
+        if (!message.getGroupId().equals(groupId)) {
+            throw new InvalidMessageException("Message does not belong to this group");
+        }
+
+        if (!message.getSenderUserId().equals(userId)) {
+            throw new InvalidMessageException("You are not the sender of this message");
+        }
+
+        messageRepository.delete(message);
+    }
+
+
 }
